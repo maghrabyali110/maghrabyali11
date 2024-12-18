@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>موقع الأذكار والتسبيح</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom, #e0f7fa, #a7ffeb);
+            color: #333;
+            text-align: center;
+            padding: 20px;
+        }
+        .azkar {
+            margin: 20px auto;
+            padding: 15px;
+            background: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            width: 80%;
+            max-width: 600px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            background-color: #fff3e0;
+        }
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+        }
+        button:hover {
+            background-color: #388e3c;
+        }
+        select {
+            margin: 10px;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #e8f5e9;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+        .modal-content {
+            background-color: #ffffff;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 10px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+            cursor: default;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+        }
+        .quran {
+            margin: 20px auto;
+            padding: 15px;
+            background: #e3f2fd;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            width: 80%;
+            max-width: 600px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <h1>موقع الأذكار والتسبيح</h1>
+    <p>اضغط على الأزرار للتسبيح وقراءة الأذكار</p>
+
+    <div class="azkar">
+        <h2>التسبيح</h2>
+        <p>اختر الذكر:</p>
+        <select id="tasbih-select">
+            <option value="سُبْحَانَ اللَّهِ">سُبْحَانَ اللَّهِ</option>
+            <option value="الْحَمْدُ لِلَّهِ">الْحَمْدُ لِلَّهِ</option>
+            <option value="اللَّهُ أَكْبَرُ">اللَّهُ أَكْبَرُ</option>
+            <option value="لا إله إلا الله">لا إله إلا الله</option>
+            <option value="لا حول ولا قوة إلا بالله">لا حول ولا قوة إلا بالله</option>
+        </select>
+        <p id="tasbih-count">عدد التسبيحات: 0</p>
+        <button onclick="increaseTasbih()">سبح</button>
+        <button onclick="resetTasbih()">مسح العدد</button>
+    </div>
+
+    <div class="azkar">
+        <h2>أذكار الصباح والمساء</h2>
+        <button onclick="openZikrModal()">عرض الأذكار</button>
+    </div>
+
+    <div class="quran">
+        <h2>قراءة القرآن</h2>
+        <p>يمكنك قراءة المصحف الشريف:</p>
+        <button onclick="openQuran()">فتح المصحف</button>
+    </div>
+
+    <div id="zikrModal" class="modal">
+        <div class="modal-content" onclick="event.stopPropagation();">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <p id="modal-display">اضغط على النافذة لعرض الأذكار</p>
+        </div>
+    </div>
+
+    <script>
+        let tasbihCount = 0;
+        let currentZikrIndex = 0;
+
+        function increaseTasbih() {
+            const selectedZikr = document.getElementById('tasbih-select').value;
+            tasbihCount++;
+            document.getElementById('tasbih-count').innerText = `عدد التسبيحات (${selectedZikr}): ${tasbihCount}`;
+        }
+
+        function resetTasbih() {
+            tasbihCount = 0;
+            document.getElementById('tasbih-count').innerText = "عدد التسبيحات: 0";
+        }
+
+        const azkarList = [
+            "اللّهُ لاَ إِلَـهَ إِلاَّ هُوَ الْحَيُّ الْقَيُّومُ...",
+            "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ عَدَدَ خَلْقِهِ...",
+            "اللهم بك أصبحنا وبك أمسينا...",
+            "أعوذ بكلمات الله التامات من شر ما خلق...",
+            "اللهم صل وسلم على نبينا محمد...",
+            "بسم الله الذي لا يضر مع اسمه شيء في الأرض ولا في السماء وهو السميع العليم...",
+            "رضيت بالله ربا وبالإسلام دينا وبمحمد صلى الله عليه وسلم نبيا...",
+            "حسبي الله لا إله إلا هو عليه توكلت وهو رب العرش العظيم...",
+            "سبحان الله وبحمده سبحان الله العظيم...",
+            "يا حي يا قيوم برحمتك أستغيث..."
+        ];
+
+        function showZikr() {
+            document.getElementById('modal-display').innerText = azkarList[currentZikrIndex];
+        }
+
+        function nextZikr() {
+            currentZikrIndex = (currentZikrIndex + 1) % azkarList.length;
+            showZikr();
+        }
+
+        function openZikrModal() {
+            document.getElementById('zikrModal').style.display = "block";
+            showZikr();
+        }
+
+        function closeModal() {
+            document.getElementById('zikrModal').style.display = "none";
+        }
+
+        document.getElementById('zikrModal').addEventListener('click', function() {
+            nextZikr();
+        });
+
+        function openQuran() {
+            window.open("https://quran.com", "_blank");
+        }
+    </script>
+</body>
+</html>
